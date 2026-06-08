@@ -1,5 +1,6 @@
-import { type ContentScriptContext, storage } from "#imports"
+import type { ContentScriptContext } from "#imports"
 import type { Config } from "@/types/config/config"
+import { storage } from "#imports"
 import { CONFIG_STORAGE_KEY, DEFAULT_CONFIG } from "@/utils/constants/config"
 import { detectPageLanguageLightweight } from "@/utils/content/page-language"
 import { ensurePresetStyles } from "@/utils/host/translate/ui/style-injector"

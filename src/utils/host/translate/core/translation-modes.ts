@@ -409,7 +409,7 @@ export async function translateNodesPhoneticOnlyMode(
 
     // Request transcriptions asynchronously
     const transcriptions = await Promise.all(
-      textNodes.map(node => transcribeTextToPhoneticsAsync(node.textContent ?? ""))
+      textNodes.map(node => transcribeTextToPhoneticsAsync(node.textContent ?? "")),
     )
 
     // Batch DOM mutations
@@ -546,7 +546,7 @@ export async function translateNodesTrilingualMode(
 
     // Request transcriptions asynchronously
     const transcriptions = await Promise.all(
-      textNodes.map(node => transcribeTextToPhoneticsAsync(node.textContent ?? ""))
+      textNodes.map(node => transcribeTextToPhoneticsAsync(node.textContent ?? "")),
     )
 
     // Batch DOM mutations

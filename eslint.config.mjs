@@ -25,6 +25,7 @@ export default antfu({
   },
   ignores: [
     "**/skills/**",
+    "src/utils/phonetic/cmu_dictionary.json",
   ],
   rules: {
     "unused-imports/no-unused-imports": "error",

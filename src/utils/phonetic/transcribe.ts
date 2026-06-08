@@ -36,34 +36,36 @@ const HOMOGRAPH_MAP: Record<string, Record<string, string>> = {
 
 function getPluralPhonetic(rootIpa: string): string {
   const cleanIpa = rootIpa.trim()
-  if (!cleanIpa) return "z"
+  if (!cleanIpa)
+    return "z"
 
   // Sibilants check (ends with s, z, ʃ, ʒ, tʃ, dʒ)
-  if (/(s|z|ʃ|ʒ|tʃ|dʒ)$/.test(cleanIpa)) {
-    return cleanIpa + "ɪz"
+  if (/(?:[szʃʒ]|tʃ|dʒ)$/.test(cleanIpa)) {
+    return `${cleanIpa}ɪz`
   }
   // Voiceless consonants check (ends with p, t, k, f, θ)
-  if (/(p|t|k|f|θ)$/.test(cleanIpa)) {
-    return cleanIpa + "s"
+  if (/[ptkfθ]$/.test(cleanIpa)) {
+    return `${cleanIpa}s`
   }
   // Voiced consonants and vowels
-  return cleanIpa + "z"
+  return `${cleanIpa}z`
 }
 
 function getPastTensePhonetic(rootIpa: string): string {
   const cleanIpa = rootIpa.trim()
-  if (!cleanIpa) return "d"
+  if (!cleanIpa)
+    return "d"
 
   // Ends in t or d -> append ɪd
-  if (/(t|d)$/.test(cleanIpa)) {
-    return cleanIpa + "ɪd"
+  if (/[td]$/.test(cleanIpa)) {
+    return `${cleanIpa}ɪd`
   }
   // Ends in voiceless consonant -> append t
-  if (/(p|k|f|s|ʃ|tʃ|θ)$/.test(cleanIpa)) {
-    return cleanIpa + "t"
+  if (/(?:[pkfsʃθ]|tʃ)$/.test(cleanIpa)) {
+    return `${cleanIpa}t`
   }
   // Ends in voiced sound -> append d
-  return cleanIpa + "d"
+  return `${cleanIpa}d`
 }
 
 function lookupPhoneticWithFallback(word: string): string | null {
@@ -76,13 +78,13 @@ function lookupPhoneticWithFallback(word: string): string | null {
   if (word.endsWith("ly") && word.length > 4) {
     const root1 = word.slice(0, -2) // quickly -> quick
     if (CMU_DICT[root1]) {
-      return CMU_DICT[root1] + "li"
+      return `${CMU_DICT[root1]}li`
     }
     if (root1.endsWith("i")) {
       const root2 = `${root1.slice(0, -1)}y` // happily -> happi -> happy
       if (CMU_DICT[root2]) {
         // Strip trailing vowel IPA if necessary, but simple append works well
-        return CMU_DICT[root2] + "li"
+        return `${CMU_DICT[root2]}li`
       }
     }
   }
@@ -142,7 +144,7 @@ export function transcribeTextToPhonetics(text: string): string {
   const sentences = doc.json({ terms: { text: true, tags: true, normal: true } }) as any[]
 
   // Flatten terms from compromise to match against segments
-  const compromiseWords: { text: string; normal: string; tags: string[] }[] = []
+  const compromiseWords: { text: string, normal: string, tags: string[] }[] = []
   for (const sentence of sentences) {
     if (sentence.terms) {
       for (const term of sentence.terms) {
@@ -196,14 +198,16 @@ export function transcribeTextToPhonetics(text: string): string {
     if (homograph) {
       const matchingTag = tags.find(tag => tag in homograph)
       ipa = matchingTag ? homograph[matchingTag] : homograph.default
-    } else {
+    }
+    else {
       ipa = lookupPhoneticWithFallback(lowerWord)
     }
 
     if (ipa) {
       const escapedWord = escapeHtml(segment)
       result += `<ruby>${escapedWord}<rt>/${ipa}/</rt></ruby>`
-    } else {
+    }
+    else {
       result += escapeHtml(segment)
     }
   }

@@ -2,7 +2,7 @@ let workerInstance: Worker | null = null
 let requestCounter = 0
 const activeRequests = new Map<
   string,
-  { resolve: (value: string) => void; reject: (error: Error) => void }
+  { resolve: (value: string) => void, reject: (error: Error) => void }
 >()
 
 function getWorker(): Worker | null {
@@ -13,7 +13,7 @@ function getWorker(): Worker | null {
     // WXT / Vite handles bundling this URL format automatically
     workerInstance = new Worker(
       new URL("./phonetic.worker.ts", import.meta.url),
-      { type: "module" }
+      { type: "module" },
     )
     workerInstance.addEventListener("message", (event: MessageEvent) => {
       const { id, success, result, error } = event.data
@@ -22,7 +22,8 @@ function getWorker(): Worker | null {
         activeRequests.delete(id)
         if (success) {
           callback.resolve(result)
-        } else {
+        }
+        else {
           callback.reject(new Error(error || "Worker transcription failed"))
         }
       }

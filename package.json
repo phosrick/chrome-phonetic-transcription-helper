@@ -1,10 +1,10 @@
 {
-  "name": "@read-frog/extension",
+  "name": "chrome-phonetic-transcription-helper",
   "type": "module",
-  "version": "1.33.11",
+  "version": "1.0.0",
   "private": true,
   "packageManager": "pnpm@10.33.4",
-  "description": "Read Frog browser extension for language learning",
+  "description": "Phonetic Transcription Helper browser extension for language learning",
   "scripts": {
     "build": "wxt build",
     "build:edge": "wxt build -b edge",
