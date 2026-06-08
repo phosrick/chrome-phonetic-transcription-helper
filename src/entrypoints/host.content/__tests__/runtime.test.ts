@@ -20,6 +20,7 @@ const {
   messageHandlers: new Map<string, (msg?: any) => any>(),
   managerInstances: [] as Array<{
     isActive: boolean
+    mode: "translation" | "phonetic"
     start: ReturnType<typeof vi.fn>
     stop: ReturnType<typeof vi.fn>
     restart: ReturnType<typeof vi.fn>
@@ -80,7 +81,10 @@ vi.mock("../translation-control/node-translation", () => ({
 vi.mock("../translation-control/page-translation", () => ({
   PageTranslationManager: class {
     isActive = false
-    start = vi.fn(async () => {
+    mode: "translation" | "phonetic" = "translation"
+
+    start = vi.fn(async (_analyticsContext?: unknown, mode?: "translation" | "phonetic") => {
+      this.mode = mode ?? "translation"
       this.isActive = true
     })
 
@@ -88,7 +92,8 @@ vi.mock("../translation-control/page-translation", () => ({
       this.isActive = false
     })
 
-    restart = vi.fn(async () => {
+    restart = vi.fn(async (mode?: "translation" | "phonetic") => {
+      this.mode = mode ?? this.mode
       this.isActive = true
     })
 
@@ -223,6 +228,34 @@ describe("bootstrapHostContent URL changes", () => {
       url: window.location.href,
       detectedCodeOrUnd: "jpn",
     })
+
+    invalidate()
+  })
+
+  it("restarts the active top-frame manager when the requested page mode changes", async () => {
+    const { ctx, invalidate } = createContentScriptContext()
+    await bootstrapHostContent(ctx, null)
+    const manager = managerInstances[0]
+    manager.isActive = true
+    manager.mode = "translation"
+
+    const toggleHandler = messageHandlers.get("askManagerToTogglePageTranslation")
+    if (!toggleHandler) {
+      throw new Error("Expected askManagerToTogglePageTranslation handler to be registered")
+    }
+
+    toggleHandler({
+      data: {
+        enabled: true,
+        mode: "phonetic",
+      },
+    })
+    await flushAsyncWork()
+
+    expect(manager.restart).toHaveBeenCalledWith("phonetic")
+    expect(manager.start).not.toHaveBeenCalled()
+    expect(manager.stop).not.toHaveBeenCalled()
+    expect(manager.mode).toBe("phonetic")
 
     invalidate()
   })

@@ -7,6 +7,7 @@ import { getLocalConfig } from "@/utils/config/storage"
 import { CONTENT_WRAPPER_CLASS } from "@/utils/constants/dom-labels"
 import { resolveProviderConfig } from "@/utils/constants/feature-providers"
 import { getRandomUUID } from "@/utils/crypto-polyfill"
+import { flushBatchedOperations } from "@/utils/host/dom/batch-dom"
 import { hasNoWalkAncestor, isDontWalkIntoAndDontTranslateAsChildElement, isDontWalkIntoButTranslateAsChildElement, isHTMLElement } from "@/utils/host/dom/filter"
 import { deepQueryTopLevelSelector } from "@/utils/host/dom/find"
 import { walkAndLabelElement } from "@/utils/host/dom/traversal"
@@ -48,7 +49,7 @@ interface IPageTranslationManager {
    * Refreshes translation after an in-document route change without disabling
    * the tab-level page translation session.
    */
-  restart: () => Promise<void>
+  restart: (mode?: "translation" | "phonetic") => Promise<void>
 
   /**
    * Registers page translation triggers
@@ -203,14 +204,15 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.stopInternal({ notify: true })
   }
 
-  async restart(): Promise<void> {
+  async restart(mode?: "translation" | "phonetic"): Promise<void> {
     if (!this.isPageTranslating) {
-      await this.start(undefined, this.currentMode)
+      await this.start(undefined, mode ?? this.currentMode)
       return
     }
 
     this.stopInternal({ notify: false })
-    await this.start(undefined, this.currentMode)
+    flushBatchedOperations()
+    await this.start(undefined, mode ?? this.currentMode)
   }
 
   private stopInternal({ notify }: { notify: boolean }): void {

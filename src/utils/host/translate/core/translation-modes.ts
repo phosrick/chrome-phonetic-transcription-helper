@@ -26,6 +26,9 @@ import { createSpinnerInside, getTranslatedTextAndRemoveSpinner } from "../ui/sp
 import { isNumericContent } from "../ui/translation-utils"
 import { MARK_ATTRIBUTES_REGEX, originalContentMap, translatingNodes } from "./translation-state"
 
+const PHONETIC_ANNOTATED_CLASS = "rf-phonetic-annotated"
+const PHONETIC_TAG_NAMES = new Set(["RUBY", "RT", "RP"])
+
 function isTransNodeAndNotTranslatedWrapper(node: Node): node is TransNode {
   if (isHTMLElement(node) && node.classList.contains(CONTENT_WRAPPER_CLASS))
     return false
@@ -341,7 +344,12 @@ function collectTextNodes(node: Node): Text[] {
     return []
   }
   if (isHTMLElement(node)) {
-    if (node.classList.contains(CONTENT_WRAPPER_CLASS) || node.classList.contains(NOTRANSLATE_CLASS)) {
+    if (
+      node.classList.contains(CONTENT_WRAPPER_CLASS)
+      || node.classList.contains(NOTRANSLATE_CLASS)
+      || node.classList.contains(PHONETIC_ANNOTATED_CLASS)
+      || PHONETIC_TAG_NAMES.has(node.tagName)
+    ) {
       return []
     }
     const results: Text[] = []
@@ -417,7 +425,7 @@ export async function translateNodesPhoneticOnlyMode(
       textNodes.forEach((node, index) => {
         const ipaHtml = transcriptions[index]
         const span = ownerDoc.createElement("span")
-        span.className = "rf-phonetic-annotated"
+        span.className = `${NOTRANSLATE_CLASS} ${PHONETIC_ANNOTATED_CLASS}`
         span.innerHTML = ipaHtml
         node.parentNode?.replaceChild(span, node)
       })
@@ -554,7 +562,7 @@ export async function translateNodesTrilingualMode(
       textNodes.forEach((node, index) => {
         const ipaHtml = transcriptions[index]
         const span = ownerDoc.createElement("span")
-        span.className = "rf-phonetic-annotated"
+        span.className = `${NOTRANSLATE_CLASS} ${PHONETIC_ANNOTATED_CLASS}`
         span.innerHTML = ipaHtml
         node.parentNode?.replaceChild(span, node)
       })

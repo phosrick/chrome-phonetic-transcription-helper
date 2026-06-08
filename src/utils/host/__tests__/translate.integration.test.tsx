@@ -110,12 +110,16 @@ describe("translate", () => {
   })
 
   // Helper functions
-  async function removeOrShowPageTranslation(translationMode: TranslationMode, toggle: boolean = false) {
+  async function removeOrShowPageTranslation(
+    translationMode: TranslationMode,
+    toggle: boolean = false,
+    pageMode: "translation" | "phonetic" = "translation",
+  ) {
     const id = crypto.randomUUID()
 
     walkAndLabelElement(document.body, id, translationMode === "bilingual" ? BILINGUAL_CONFIG : TRANSLATION_ONLY_CONFIG)
     await act(async () => {
-      await translateWalkedElement(document.body, id, translationMode === "bilingual" ? BILINGUAL_CONFIG : TRANSLATION_ONLY_CONFIG, toggle)
+      await translateWalkedElement(document.body, id, translationMode === "bilingual" ? BILINGUAL_CONFIG : TRANSLATION_ONLY_CONFIG, toggle, pageMode)
       // Flush batched DOM operations to ensure all changes are applied before assertions
       flushBatchedOperations()
     })
@@ -169,6 +173,27 @@ describe("translate", () => {
         await removeOrShowPageTranslation("translationOnly", true)
         expect(node.querySelector(`.${CONTENT_WRAPPER_CLASS}`)).toBeFalsy()
         expect(node.textContent).toBe(MOCK_ORIGINAL_TEXT)
+      })
+
+      it("phonetic mode: should not re-transcribe inserted ruby annotations on repeated walks", async () => {
+        render(
+          <div data-testid="test-node">
+            chrome phonetic helper
+          </div>,
+        )
+        const node = screen.getByTestId("test-node")
+
+        await removeOrShowPageTranslation("bilingual", false, "phonetic")
+        const firstText = node.textContent
+        expect(node.querySelectorAll(".rf-phonetic-annotated")).toHaveLength(1)
+        expect(node.querySelectorAll("ruby")).toHaveLength(3)
+        expect(firstText).toContain("/ˈkroʊm/")
+
+        await removeOrShowPageTranslation("bilingual", false, "phonetic")
+
+        expect(node.querySelectorAll(".rf-phonetic-annotated")).toHaveLength(1)
+        expect(node.querySelectorAll("ruby")).toHaveLength(3)
+        expect(node.textContent).toBe(firstText)
       })
     })
     describe("inline HTML node", () => {

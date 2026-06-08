@@ -80,18 +80,28 @@ export async function bootstrapHostContent(ctx: ContentScriptContext, initialCon
   // Listen for translation state changes from background
   const cleanupTranslationStateListener = onMessage("askManagerToTogglePageTranslation", (msg) => {
     const { enabled, mode, analyticsContext } = msg.data
+    const requestedMode = mode ?? manager.mode
+    if (enabled && manager.isActive && requestedMode !== manager.mode) {
+      void manager.restart(requestedMode)
+      return
+    }
     if (enabled === manager.isActive)
       return
-    enabled ? void manager.start(window === window.top ? analyticsContext : undefined, mode) : manager.stop()
+    enabled ? void manager.start(window === window.top ? analyticsContext : undefined, requestedMode) : manager.stop()
   })
 
   const cleanupFrameTranslationStateListener = window === window.top
     ? () => {}
     : onMessage("notifyTranslationStateChanged", (msg) => {
         const { enabled, mode } = msg.data
+        const requestedMode = mode ?? manager.mode
+        if (enabled && manager.isActive && requestedMode !== manager.mode) {
+          void manager.restart(requestedMode)
+          return
+        }
         if (enabled === manager.isActive)
           return
-        enabled ? void manager.start(undefined, mode) : manager.stop()
+        enabled ? void manager.start(undefined, requestedMode) : manager.stop()
       })
 
   const cleanupDetectedLanguageRefreshListener = window === window.top
