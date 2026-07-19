@@ -1,6 +1,7 @@
 import type { LangCodeISO6393 } from "@read-frog/definitions"
 import type { FeatureUsageContext } from "@/types/analytics"
 import type { Config } from "@/types/config/config"
+import type { PageTranslationMode } from "@/types/translation-state"
 import { browser, storage } from "#imports"
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
 import { createFeatureUsageContext } from "@/utils/analytics"
@@ -17,7 +18,7 @@ import {
   setPageTranslationEnabled,
 } from "./page-translation-state"
 
-function notifyPageTranslationStateChanged(tabId: number, enabled: boolean, mode?: "translation" | "phonetic") {
+function notifyPageTranslationStateChanged(tabId: number, enabled: boolean, mode?: PageTranslationMode) {
   void sendMessage("notifyTranslationStateChanged", { enabled, mode }, tabId)
     .catch(error => logger.warn("Failed to notify page translation state change", error))
 }
@@ -25,7 +26,7 @@ function notifyPageTranslationStateChanged(tabId: number, enabled: boolean, mode
 function requestManagerToTogglePageTranslation(
   tabId: number,
   enabled: boolean,
-  mode?: "translation" | "phonetic",
+  mode?: PageTranslationMode,
   analyticsContext?: FeatureUsageContext,
 ) {
   void sendMessage("askManagerToTogglePageTranslation", { enabled, mode, analyticsContext }, tabId)

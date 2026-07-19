@@ -1,7 +1,18 @@
+import type { PhoneticPronunciationVariant } from "@/types/config/translate"
 import nlp from "compromise"
 import CMU_DICT_RAW from "./cmu_dictionary.json"
 
 const CMU_DICT = CMU_DICT_RAW as Record<string, string>
+
+const DEFAULT_PRONUNCIATION_VARIANT: PhoneticPronunciationVariant = "spoken"
+
+const SPOKEN_FUNCTION_WORD_IPA: Record<string, string> = {
+  a: "ə",
+  and: "ənd",
+  of: "əv",
+  the: "ðə",
+  to: "tə",
+}
 
 // Common English homographs mapped to their POS-specific pronunciations
 const HOMOGRAPH_MAP: Record<string, Record<string, string>> = {
@@ -138,7 +149,29 @@ function lookupPhoneticWithFallback(word: string): string | null {
   return null
 }
 
-export function transcribeTextToPhonetics(text: string): string {
+function getPrimaryPhonetic(ipa: string): string {
+  return ipa.split(",").map(item => item.trim()).find(Boolean) ?? ipa.trim()
+}
+
+function getDisplayPhonetic(word: string, ipa: string, variant: PhoneticPronunciationVariant): string {
+  if (variant === "all") {
+    return ipa
+  }
+
+  if (variant === "spoken") {
+    const spokenIpa = SPOKEN_FUNCTION_WORD_IPA[word]
+    if (spokenIpa) {
+      return spokenIpa
+    }
+  }
+
+  return getPrimaryPhonetic(ipa)
+}
+
+export function transcribeTextToPhonetics(
+  text: string,
+  pronunciationVariant: PhoneticPronunciationVariant = DEFAULT_PRONUNCIATION_VARIANT,
+): string {
   // Use compromise to perform POS tagging
   const doc = nlp(text)
   const sentences = doc.json({ terms: { text: true, tags: true, normal: true } }) as any[]
@@ -205,7 +238,8 @@ export function transcribeTextToPhonetics(text: string): string {
 
     if (ipa) {
       const escapedWord = escapeHtml(segment)
-      result += `<ruby>${escapedWord}<rt>/${ipa}/</rt></ruby>`
+      const displayIpa = getDisplayPhonetic(lowerWord, ipa, pronunciationVariant)
+      result += `<ruby>${escapedWord}<rt>/${displayIpa}/</rt></ruby>`
     }
     else {
       result += escapeHtml(segment)

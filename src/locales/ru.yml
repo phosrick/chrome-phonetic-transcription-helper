@@ -20,6 +20,11 @@ popup:
   targetLang: Целевой
   translate: Перевести
   showOriginal: Показать оригинал
+  phoneticGuide: Phonetic Guide
+  hidePhonetics: Hide Phonetics
+  trilingualMode: Phonetic + Translation
+  hideTrilingualMode: Hide
+  trilingualModeDescription: Show IPA phonetics alongside translation.
   enabledFloatingButton: Включить плавающую кнопку
   enabledSelectionToolbar: Включить панель выделения
   alwaysTranslate: Всегда переводить этот сайт
@@ -30,21 +35,10 @@ popup:
   translateParagraph: для перевода абзаца
   hub:
     tooltip: Переводите текст несколькими моделями одновременно
-  discord:
-    tooltip: Присоединяйтесь к Discord, чтобы связаться с разработчиками и получить ранний доступ к новым функциям
   blog:
     notification: Что нового в Read Frog
   aiSmartContext: Умный контекст ИИ
   aiSmartContextDescription: Использует контекст веб-страницы для улучшения качества перевода. Требуется LLM-провайдер перевода.
-  more:
-    title: Ещё
-    translationHub: Центр переводов
-    joinDiscord: Присоединиться к Discord
-    joinWechat: Присоединиться к группе WeChat
-    starGithub: Поставить звезду на Github
-    rateUs: Оценить нас
-    ebook: Сторонняя читалка электронных книг
-    tutorial: Руководство
 errorRecovery:
   title: Что-то пошло не так
   description: Активирован режим восстановления. Вы можете экспортировать текущие настройки как резервную копию, затем сбросить настройки и попробовать снова.
@@ -584,6 +578,14 @@ options:
       title: Горячая клавиша перевода при наведении или долгом нажатии
       description: Настройте клавишу-модификатор для перевода при наведении или используйте долгое нажатие для перевода абзацев
       enable: Включить
+    phoneticPronunciation:
+      title: Фонетическое произношение
+      description: Выберите, как показывать несколько вариантов произношения в фонетическом режиме
+      label: Предпочтение произношения
+      variant:
+        spoken: Разговорная практика
+        primary: Основное произношение
+        all: Показать все
     llmProviderConfigured: LLM-провайдер выбран для $1
     llmProviderNotConfigured: LLM-провайдер не выбран для $1
     autoTranslateLanguages:

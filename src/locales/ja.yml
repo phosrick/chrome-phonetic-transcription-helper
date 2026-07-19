@@ -20,6 +20,11 @@ popup:
   targetLang: 翻訳言語
   translate: 翻訳
   showOriginal: 原文を表示
+  phoneticGuide: Phonetic Guide
+  hidePhonetics: Hide Phonetics
+  trilingualMode: Phonetic + Translation
+  hideTrilingualMode: Hide
+  trilingualModeDescription: Show IPA phonetics alongside translation.
   enabledFloatingButton: フローティングボタンを有効化
   enabledSelectionToolbar: 選択ツールバーを有効化
   alwaysTranslate: このサイトを常に翻訳する
@@ -30,21 +35,10 @@ popup:
   translateParagraph: 段落を翻訳
   hub:
     tooltip: 複数の翻訳モデルで同時にテキストを翻訳
-  discord:
-    tooltip: Discordに参加して開発者とつながり、新機能を先行体験しましょう
   blog:
     notification: 読書カエルの最新情報
   aiSmartContext: AI スマートコンテキスト
   aiSmartContextDescription: ウェブページのコンテキストを使用して翻訳品質を向上させます。LLM翻訳プロバイダーが必要です。
-  more:
-    title: その他
-    translationHub: 翻訳ハブ
-    joinDiscord: Discordに参加
-    joinWechat: WeChatグループに参加
-    starGithub: Githubでスター
-    rateUs: レビューを書く
-    ebook: サードパーティ電子書籍リーダー
-    tutorial: 使い方ガイド
 errorRecovery:
   title: 問題が発生しました
   description: 復旧モードが有効です。現在の設定をバックアップとしてエクスポートし、設定をリセットして再試行してください。
@@ -584,6 +578,14 @@ options:
       title: ホバーまたは長押し翻訳ショートカットキー
       description: ホバー翻訳の修飾キーをカスタマイズするか、長押しで段落を翻訳します
       enable: 有効化
+    phoneticPronunciation:
+      title: 音標の発音
+      description: 音標ガイドで複数の発音をどのように表示するかを選択します
+      label: 発音の優先設定
+      variant:
+        spoken: 会話練習
+        primary: 主な発音
+        all: すべて表示
     llmProviderConfigured: $1の LLM プロバイダー選択済み
     llmProviderNotConfigured: $1の LLM プロバイダー未選択
     autoTranslateLanguages:

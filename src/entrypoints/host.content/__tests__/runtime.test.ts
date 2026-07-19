@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import type { ContentScriptContext } from "#imports"
+import type { PageTranslationMode } from "@/types/translation-state"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { bootstrapHostContent } from "../runtime"
 
@@ -20,7 +21,7 @@ const {
   messageHandlers: new Map<string, (msg?: any) => any>(),
   managerInstances: [] as Array<{
     isActive: boolean
-    mode: "translation" | "phonetic"
+    mode: PageTranslationMode
     start: ReturnType<typeof vi.fn>
     stop: ReturnType<typeof vi.fn>
     restart: ReturnType<typeof vi.fn>
@@ -81,9 +82,9 @@ vi.mock("../translation-control/node-translation", () => ({
 vi.mock("../translation-control/page-translation", () => ({
   PageTranslationManager: class {
     isActive = false
-    mode: "translation" | "phonetic" = "translation"
+    mode: PageTranslationMode = "translation"
 
-    start = vi.fn(async (_analyticsContext?: unknown, mode?: "translation" | "phonetic") => {
+    start = vi.fn(async (_analyticsContext?: unknown, mode?: PageTranslationMode) => {
       this.mode = mode ?? "translation"
       this.isActive = true
     })
@@ -92,7 +93,7 @@ vi.mock("../translation-control/page-translation", () => ({
       this.isActive = false
     })
 
-    restart = vi.fn(async (mode?: "translation" | "phonetic") => {
+    restart = vi.fn(async (mode?: PageTranslationMode) => {
       this.mode = mode ?? this.mode
       this.isActive = true
     })

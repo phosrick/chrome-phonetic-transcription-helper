@@ -1,6 +1,7 @@
 import type { Config } from "@/types/config/config"
 // @vitest-environment jsdom
 import type { TranslationMode } from "@/types/config/translate"
+import type { PageTranslationMode } from "@/types/translation-state"
 import { act, render, screen, waitFor } from "@testing-library/react"
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest"
 import { DEFAULT_CONFIG } from "@/utils/constants/config"
@@ -17,6 +18,7 @@ import {
 import { flushBatchedOperations } from "@/utils/host/dom/batch-dom"
 import { walkAndLabelElement } from "@/utils/host/dom/traversal"
 import { translateWalkedElement } from "@/utils/host/translate/node-manipulation"
+import { removeAllTranslatedWrapperNodes } from "@/utils/host/translate/dom/translation-cleanup"
 import { translateTextForPage } from "@/utils/host/translate/translate-variants"
 import { expectNodeLabels, expectTranslatedContent, expectTranslationWrapper, MOCK_ORIGINAL_TEXT, MOCK_TRANSLATION } from "./utils"
 
@@ -113,7 +115,7 @@ describe("translate", () => {
   async function removeOrShowPageTranslation(
     translationMode: TranslationMode,
     toggle: boolean = false,
-    pageMode: "translation" | "phonetic" = "translation",
+    pageMode: PageTranslationMode = "translation",
   ) {
     const id = crypto.randomUUID()
 
@@ -194,6 +196,61 @@ describe("translate", () => {
         expect(node.querySelectorAll(".rf-phonetic-annotated")).toHaveLength(1)
         expect(node.querySelectorAll("ruby")).toHaveLength(3)
         expect(node.textContent).toBe(firstText)
+      })
+
+      it("trilingual mode: should render html translation as content instead of escaped text", async () => {
+        vi.mocked(translateTextForPage).mockResolvedValueOnce("<p style=\"max-height: unset;\">对于任何想要保持竞争优势的组织而言，专业和商务沟通培训都至关重要。</p>")
+
+        render(
+          <div data-testid="test-node">
+            professional and business communication training
+          </div>,
+        )
+        const node = screen.getByTestId("test-node")
+
+        await removeOrShowPageTranslation("bilingual", false, "trilingual")
+
+        const wrapper = expectTranslationWrapper(node, "translationOnly")
+        const translatedContent = expectTranslatedContent(
+          wrapper,
+          BLOCK_CONTENT_CLASS,
+          "对于任何想要保持竞争优势的组织而言，专业和商务沟通培训都至关重要。",
+        )
+
+        expect(node.querySelectorAll(".rf-phonetic-annotated")).toHaveLength(1)
+        expect(node.querySelectorAll("ruby")).toHaveLength(5)
+        expect(translatedContent).not.toHaveTextContent("<p")
+        expect(translatedContent).toBeTruthy()
+        expect(translatedContent!.querySelector("p")).toBeTruthy()
+      })
+
+      it("trilingual mode: should restore both translation and phonetics when toggled off", async () => {
+        render(
+          <div data-testid="test-container">
+            <div data-testid="test-node">
+              chrome phonetic helper
+            </div>
+          </div>,
+        )
+        let node = screen.getByTestId("test-node")
+        const originalText = node.textContent
+
+        await removeOrShowPageTranslation("bilingual", true, "trilingual")
+
+        expect(node.querySelector(`.${CONTENT_WRAPPER_CLASS}`)).toBeTruthy()
+        expect(node.querySelectorAll(".rf-phonetic-annotated")).toHaveLength(1)
+        expect(node.querySelectorAll("ruby")).toHaveLength(3)
+
+        await act(async () => {
+          removeAllTranslatedWrapperNodes()
+          flushBatchedOperations()
+        })
+
+        node = screen.getByTestId("test-node")
+        expect(node.querySelector(`.${CONTENT_WRAPPER_CLASS}`)).toBeFalsy()
+        expect(node.querySelectorAll(".rf-phonetic-annotated")).toHaveLength(0)
+        expect(node.querySelectorAll("ruby")).toHaveLength(0)
+        expect(node.textContent).toBe(originalText)
       })
     })
     describe("inline HTML node", () => {

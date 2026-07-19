@@ -71,3 +71,4 @@ export const toggleCurrentSiteAtom = atom(
 
 export const isPageTranslatedAtom = atom<boolean>(false)
 export const isPagePhoneticAtom = atom<boolean>(false)
+export const isPageTrilingualAtom = atom<boolean>(false)

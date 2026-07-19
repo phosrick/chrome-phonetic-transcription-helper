@@ -89,6 +89,7 @@ export const DEFAULT_CONFIG: Config = {
     },
     phonetic: {
       showAlongsideTranslation: false,
+      pronunciationVariant: "spoken",
     },
   },
   languageDetection: {

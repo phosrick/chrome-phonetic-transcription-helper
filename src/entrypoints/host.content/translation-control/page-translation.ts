@@ -1,5 +1,6 @@
 import type { FeatureUsageContext } from "@/types/analytics"
 import type { Config } from "@/types/config/config"
+import type { PageTranslationMode } from "@/types/translation-state"
 import { ANALYTICS_FEATURE, ANALYTICS_SURFACE } from "@/types/analytics"
 import { isLLMProviderConfig } from "@/types/config/provider"
 import { createFeatureUsageContext, trackFeatureUsed } from "@/utils/analytics"
@@ -31,13 +32,13 @@ interface IPageTranslationManager {
   /**
    * Indicates the current active translation/phonetic mode
    */
-  readonly mode: "translation" | "phonetic"
+  readonly mode: PageTranslationMode
 
   /**
    * Starts the automatic page translation functionality
    * Registers observers, touch triggers and set storage
    */
-  start: (analyticsContext?: FeatureUsageContext, mode?: "translation" | "phonetic") => Promise<void>
+  start: (analyticsContext?: FeatureUsageContext, mode?: PageTranslationMode) => Promise<void>
 
   /**
    * Stops the automatic page translation functionality
@@ -49,7 +50,7 @@ interface IPageTranslationManager {
    * Refreshes translation after an in-document route change without disabling
    * the tab-level page translation session.
    */
-  restart: (mode?: "translation" | "phonetic") => Promise<void>
+  restart: (mode?: PageTranslationMode) => Promise<void>
 
   /**
    * Registers page translation triggers
@@ -67,7 +68,7 @@ export class PageTranslationManager implements IPageTranslationManager {
   }
 
   private isPageTranslating: boolean = false
-  private currentMode: "translation" | "phonetic" = "translation"
+  private currentMode: PageTranslationMode = "translation"
   private intersectionObserver: IntersectionObserver | null = null
   private mutationObservers: MutationObserver[] = []
   private walkId: string | null = null
@@ -95,11 +96,11 @@ export class PageTranslationManager implements IPageTranslationManager {
     return this.isPageTranslating
   }
 
-  get mode(): "translation" | "phonetic" {
+  get mode(): PageTranslationMode {
     return this.currentMode
   }
 
-  async start(analyticsContext?: FeatureUsageContext, mode?: "translation" | "phonetic"): Promise<void> {
+  async start(analyticsContext?: FeatureUsageContext, mode?: PageTranslationMode): Promise<void> {
     if (this.isPageTranslating) {
       console.warn("PageTranslationManager is already active")
       return
@@ -121,7 +122,7 @@ export class PageTranslationManager implements IPageTranslationManager {
       return
     }
 
-    const isPhoneticOnly = this.currentMode === "phonetic" && !config.translate.phonetic.showAlongsideTranslation
+    const isPhoneticOnly = this.currentMode === "phonetic"
 
     if (!isPhoneticOnly && !validateTranslationConfigAndToast({
       providersConfig: config.providersConfig,
@@ -204,7 +205,7 @@ export class PageTranslationManager implements IPageTranslationManager {
     this.stopInternal({ notify: true })
   }
 
-  async restart(mode?: "translation" | "phonetic"): Promise<void> {
+  async restart(mode?: PageTranslationMode): Promise<void> {
     if (!this.isPageTranslating) {
       await this.start(undefined, mode ?? this.currentMode)
       return

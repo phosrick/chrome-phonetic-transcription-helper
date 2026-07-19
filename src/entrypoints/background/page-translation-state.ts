@@ -1,4 +1,4 @@
-import type { TranslationState } from "@/types/translation-state"
+import type { PageTranslationMode, TranslationState } from "@/types/translation-state"
 import { storage } from "#imports"
 import { getTranslationStateKey } from "@/utils/constants/storage-keys"
 import { getPageTranslationOriginScope } from "@/utils/url"
@@ -14,7 +14,7 @@ export async function getPageTranslationEnabled(tabId: number): Promise<boolean>
   return state?.enabled ?? false
 }
 
-export async function getPageTranslationMode(tabId: number): Promise<"translation" | "phonetic" | undefined> {
+export async function getPageTranslationMode(tabId: number): Promise<PageTranslationMode | undefined> {
   const state = await getPageTranslationState(tabId)
   return state?.mode
 }
@@ -23,7 +23,7 @@ export async function setPageTranslationEnabled(
   tabId: number,
   enabled: boolean,
   url?: string,
-  mode?: "translation" | "phonetic",
+  mode?: PageTranslationMode,
 ): Promise<void> {
   const origin = enabled && url ? getPageTranslationOriginScope(url) : null
 

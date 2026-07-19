@@ -1,9 +1,27 @@
 import { describe, expect, it } from "vitest"
+import { configSchema } from "@/types/config/config"
+import { DEFAULT_CONFIG } from "@/utils/constants/config"
 import { DEFAULT_PROVIDER_CONFIG, DEFAULT_PROVIDER_CONFIG_LIST } from "@/utils/constants/providers"
 import { getObjectWithoutAPIKeys, hasAPIKey } from "../api"
 import { LATEST_SCHEMA_VERSION } from "../migration"
 
 describe("config utilities", () => {
+  it("defaults missing phonetic pronunciation preference to spoken", () => {
+    const configWithoutPronunciationVariant = {
+      ...DEFAULT_CONFIG,
+      translate: {
+        ...DEFAULT_CONFIG.translate,
+        phonetic: {
+          showAlongsideTranslation: false,
+        },
+      },
+    }
+
+    const result = configSchema.parse(configWithoutPronunciationVariant)
+
+    expect(result.translate.phonetic.pronunciationVariant).toBe("spoken")
+  })
+
   describe("getObjectWithoutAPIKeys", () => {
     for (let version = 2; version <= LATEST_SCHEMA_VERSION; version++) {
       const currentVersionStr = String(version).padStart(3, "0")

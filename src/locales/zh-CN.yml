@@ -22,7 +22,8 @@ popup:
   showOriginal: 显示原文
   phoneticGuide: 音标对照
   hidePhonetics: 隐藏音标
-  trilingualMode: 三语对照模式
+  trilingualMode: 音标+翻译
+  hideTrilingualMode: 关闭
   trilingualModeDescription: 在翻译的同时，展示英文单词的 IPA 音标对照。
   enabledFloatingButton: 启用悬浮按钮
   enabledSelectionToolbar: 启用选择工具栏
@@ -34,21 +35,10 @@ popup:
   translateParagraph: 来翻译段落
   hub:
     tooltip: 一次性调用多个翻译模型翻译文本
-  discord:
-    tooltip: 加入 Discord 与开发者交流，抢先体验新功能
   blog:
     notification: 陪读蛙更新动态
   aiSmartContext: AI 智能上下文
   aiSmartContextDescription: 结合网页上下文提升翻译效果。需要配置 LLM 翻译服务商。
-  more:
-    title: 更多
-    translationHub: 翻译中心
-    joinDiscord: 加入 Discord
-    joinWechat: 加入微信群
-    starGithub: Github 加星
-    rateUs: 好评支持
-    ebook: 第三方电子书阅读器
-    tutorial: 使用教程
 errorRecovery:
   title: 应用发生异常
   description: 已进入恢复模式。你可以先导出当前设置作为备份，再重置设置后重试。
@@ -703,6 +693,14 @@ options:
       title: 悬停或长按翻译快捷键
       description: 自定义悬停翻译的修饰键，或使用鼠标长按翻译段落
       enable: 启用
+    phoneticPronunciation:
+      title: 音标读音偏好
+      description: 选择音标对照中多读音单词的展示方式
+      label: 读音偏好
+      variant:
+        spoken: 口语优先
+        primary: 主读音
+        all: 显示全部
     llmProviderConfigured: 已为$1选择 LLM 提供商
     llmProviderNotConfigured: 没有为$1选择 LLM 提供商
     autoTranslateLanguages:

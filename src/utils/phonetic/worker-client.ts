@@ -1,3 +1,5 @@
+import type { PhoneticPronunciationVariant } from "@/types/config/translate"
+
 let workerInstance: Worker | null = null
 let requestCounter = 0
 const WORKER_REQUEST_TIMEOUT_MS = 8000
@@ -6,9 +8,9 @@ const activeRequests = new Map<
   { resolve: (value: string) => void, reject: (error: Error) => void, timeoutId: ReturnType<typeof setTimeout> }
 >()
 
-async function transcribeInline(text: string): Promise<string> {
+async function transcribeInline(text: string, pronunciationVariant?: PhoneticPronunciationVariant): Promise<string> {
   const { transcribeTextToPhonetics } = await import("./transcribe")
-  return transcribeTextToPhonetics(text)
+  return transcribeTextToPhonetics(text, pronunciationVariant)
 }
 
 function rejectActiveRequests(error: Error): void {
@@ -63,11 +65,14 @@ function getWorker(): Worker | null {
  * If the environment doesn't support Web Workers (e.g. Node.js unit tests),
  * it falls back to importing and running it inline.
  */
-export async function transcribeTextToPhoneticsAsync(text: string): Promise<string> {
+export async function transcribeTextToPhoneticsAsync(
+  text: string,
+  pronunciationVariant?: PhoneticPronunciationVariant,
+): Promise<string> {
   const worker = getWorker()
   if (!worker) {
     // Fallback for environment without Web Worker support (e.g., node / vitest)
-    return transcribeInline(text)
+    return transcribeInline(text, pronunciationVariant)
   }
 
   return new Promise<string>((resolve, reject) => {
@@ -78,7 +83,7 @@ export async function transcribeTextToPhoneticsAsync(text: string): Promise<stri
     }, WORKER_REQUEST_TIMEOUT_MS)
     activeRequests.set(id, { resolve, reject, timeoutId })
     try {
-      worker.postMessage({ id, text })
+      worker.postMessage({ id, text, pronunciationVariant })
     }
     catch (error) {
       clearTimeout(timeoutId)
@@ -87,5 +92,5 @@ export async function transcribeTextToPhoneticsAsync(text: string): Promise<stri
       workerInstance = null
       reject(error instanceof Error ? error : new Error(String(error)))
     }
-  }).catch(() => transcribeInline(text))
+  }).catch(() => transcribeInline(text, pronunciationVariant))
 }

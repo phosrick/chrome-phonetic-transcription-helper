@@ -9,6 +9,7 @@ import { NeverAutoTranslateWebsitePatterns } from "./never-auto-translate-websit
 import { NodeTranslationHotkey } from "./node-translation-hotkey"
 import { PageTranslationShortcut } from "./page-translation-shortcut"
 import { PersonalizedPrompts } from "./personalized-prompt"
+import { PhoneticPronunciation } from "./phonetic-pronunciation"
 import { PreloadConfig } from "./preload-config"
 import { RequestBatch } from "./request-batch"
 import { RequestRate } from "./request-rate"
@@ -24,6 +25,7 @@ export function TranslationPage() {
       <TranslateRange />
       <PageTranslationShortcut />
       <NodeTranslationHotkey />
+      <PhoneticPronunciation />
       <CustomTranslationStyle />
       <AIContentAware />
       <PersonalizedPrompts />

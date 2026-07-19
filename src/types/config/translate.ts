@@ -21,6 +21,10 @@ export const translationModeSchema = z.enum(TRANSLATION_MODES)
 export const pageTranslateRangeSchema = z.enum(["main", "all"])
 export type PageTranslateRange = z.infer<typeof pageTranslateRangeSchema>
 
+export const PHONETIC_PRONUNCIATION_VARIANTS = ["spoken", "primary", "all"] as const
+export const phoneticPronunciationVariantSchema = z.enum(PHONETIC_PRONUNCIATION_VARIANTS).default("spoken")
+export type PhoneticPronunciationVariant = z.infer<typeof phoneticPronunciationVariantSchema>
+
 export const preloadConfigSchema = z.object({
   margin: z.number().min(MIN_PRELOAD_MARGIN).max(MAX_PRELOAD_MARGIN),
   threshold: z.number().min(MIN_PRELOAD_THRESHOLD).max(MAX_PRELOAD_THRESHOLD),
@@ -110,6 +114,7 @@ export const translateConfigSchema = z.object({
   translationNodeStyle: translationNodeStyleConfigSchema,
   phonetic: z.object({
     showAlongsideTranslation: z.boolean(),
+    pronunciationVariant: phoneticPronunciationVariantSchema,
   }),
 })
 

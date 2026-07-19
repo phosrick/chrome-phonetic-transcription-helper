@@ -1,4 +1,5 @@
 import { i18n } from "#imports"
+import { ENABLE_READFROG_CLOUD_FEATURES } from "@/utils/constants/feature-flags"
 import { PageLayout } from "../../components/page-layout"
 import { AboutCard } from "./about-card"
 import { BetaExperienceConfig } from "./beta-experience"
@@ -10,7 +11,7 @@ import { ResetConfig } from "./reset-config"
 export function ConfigPage() {
   return (
     <PageLayout title={i18n.t("options.config.title")} innerClassName="*:border-b [&>*:last-child]:border-b-0">
-      <BetaExperienceConfig />
+      {ENABLE_READFROG_CLOUD_FEATURES && <BetaExperienceConfig />}
       <GoogleDriveSyncCard />
       <ManualConfigSync />
       <ConfigBackup />

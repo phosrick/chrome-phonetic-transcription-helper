@@ -20,6 +20,11 @@ popup:
   targetLang: Đích
   translate: Dịch
   showOriginal: Hiển thị bản gốc
+  phoneticGuide: Phonetic Guide
+  hidePhonetics: Hide Phonetics
+  trilingualMode: Phonetic + Translation
+  hideTrilingualMode: Hide
+  trilingualModeDescription: Show IPA phonetics alongside translation.
   enabledFloatingButton: Bật nút nổi
   enabledSelectionToolbar: Bật thanh công cụ chọn văn bản
   alwaysTranslate: Luôn dịch trang web này
@@ -30,21 +35,10 @@ popup:
   translateParagraph: để dịch đoạn văn
   hub:
     tooltip: Dịch văn bản với nhiều mô hình đồng thời
-  discord:
-    tooltip: Tham gia Discord để kết nối với các nhà phát triển và truy cập sớm các tính năng mới
   blog:
     notification: Có gì mới trong Read Frog
   aiSmartContext: Ngữ cảnh thông minh AI
   aiSmartContextDescription: Sử dụng ngữ cảnh trang web để cải thiện chất lượng dịch. Yêu cầu nhà cung cấp dịch LLM.
-  more:
-    title: Thêm
-    translationHub: Trung tâm Dịch thuật
-    joinDiscord: Tham gia Discord
-    joinWechat: Tham gia nhóm WeChat
-    starGithub: Đánh dấu sao trên Github
-    rateUs: Đánh giá chúng tôi
-    ebook: Trình đọc sách điện tử bên thứ ba
-    tutorial: Hướng dẫn
 errorRecovery:
   title: Đã xảy ra sự cố
   description: Chế độ khôi phục đang hoạt động. Bạn có thể xuất cài đặt hiện tại để sao lưu, sau đó đặt lại cài đặt và thử lại.
@@ -584,6 +578,14 @@ options:
       title: Phím tắt dịch khi di chuột hoặc nhấn giữ
       description: Tùy chỉnh phím bổ trợ khi di chuột hoặc dùng nhấn giữ để dịch đoạn văn
       enable: Bật
+    phoneticPronunciation:
+      title: Phiên âm phát âm
+      description: Chọn cách hiển thị nhiều cách phát âm trong chế độ hướng dẫn phiên âm
+      label: Tùy chọn phát âm
+      variant:
+        spoken: Luyện nói
+        primary: Phát âm chính
+        all: Hiển thị tất cả
     llmProviderConfigured: Đã chọn nhà cung cấp LLM cho $1
     llmProviderNotConfigured: Chưa chọn nhà cung cấp LLM cho $1
     autoTranslateLanguages:

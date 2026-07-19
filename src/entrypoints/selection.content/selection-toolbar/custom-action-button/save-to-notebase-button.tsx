@@ -6,6 +6,7 @@ import { i18n } from "#imports"
 import { Button } from "@/components/ui/base-ui/button"
 import { configFieldsAtomMap } from "@/utils/atoms/config"
 import { authClient } from "@/utils/auth/auth-client"
+import { ENABLE_READFROG_CLOUD_FEATURES } from "@/utils/constants/feature-flags"
 import {
   buildNotebaseRowCells,
   isORPCNotFoundError,
@@ -27,7 +28,7 @@ export function SaveToNotebaseButton({
 }) {
   const betaExperienceConfig = useAtomValue(configFieldsAtomMap.betaExperience)
 
-  if (!betaExperienceConfig.enabled) {
+  if (!ENABLE_READFROG_CLOUD_FEATURES || !betaExperienceConfig.enabled) {
     return null
   }
 

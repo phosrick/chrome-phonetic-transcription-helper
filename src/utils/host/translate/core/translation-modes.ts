@@ -1,6 +1,7 @@
 import type { Config } from "@/types/config/config"
 import type { TranslationMode } from "@/types/config/translate"
 import type { TransNode } from "@/types/dom"
+import type { PageTranslationMode } from "@/types/translation-state"
 import {
   BLOCK_CONTENT_CLASS,
   CONTENT_WRAPPER_CLASS,
@@ -53,15 +54,14 @@ export async function translateNodes(
   toggle: boolean = false,
   config: Config,
   forceBlockTranslation: boolean = false,
-  mode?: "translation" | "phonetic",
+  mode?: PageTranslationMode,
 ): Promise<void> {
   const currentMode = mode ?? "translation"
-  const showAlongside = config.translate.phonetic.showAlongsideTranslation
 
-  if (currentMode === "phonetic" && !showAlongside) {
+  if (currentMode === "phonetic") {
     await translateNodesPhoneticOnlyMode(nodes, walkId, config, toggle)
   }
-  else if (showAlongside) {
+  else if (currentMode === "trilingual") {
     await translateNodesTrilingualMode(nodes, walkId, config, toggle, forceBlockTranslation)
   }
   else {
@@ -417,7 +417,10 @@ export async function translateNodesPhoneticOnlyMode(
 
     // Request transcriptions asynchronously
     const transcriptions = await Promise.all(
-      textNodes.map(node => transcribeTextToPhoneticsAsync(node.textContent ?? "")),
+      textNodes.map(node => transcribeTextToPhoneticsAsync(
+        node.textContent ?? "",
+        config.translate.phonetic.pronunciationVariant,
+      )),
     )
 
     // Batch DOM mutations
@@ -508,6 +511,11 @@ export async function translateNodesTrilingualMode(
     if (!textContent)
       return
 
+    const hasExistingWrapperInParent = parentNode.querySelector(`.${CONTENT_WRAPPER_CLASS}`)
+    if (!originalContentMap.has(parentNode) && !hasExistingWrapperInParent) {
+      originalContentMap.set(parentNode, parentNode.innerHTML)
+    }
+
     const ownerDoc = getOwnerDocument(targetNode)
     const translatedWrapperNode = ownerDoc.createElement("span")
     translatedWrapperNode.className = `${NOTRANSLATE_CLASS} ${CONTENT_WRAPPER_CLASS}`
@@ -540,12 +548,6 @@ export async function translateNodesTrilingualMode(
       return
     }
 
-    // Save original content BEFORE annotating the original nodes
-    const hasExistingWrapperInParent = parentNode.querySelector(`.${CONTENT_WRAPPER_CLASS}`)
-    if (!originalContentMap.has(parentNode) && !hasExistingWrapperInParent) {
-      originalContentMap.set(parentNode, parentNode.innerHTML)
-    }
-
     // Collect all text nodes
     const textNodes: Text[] = []
     for (const node of transNodes) {
@@ -554,7 +556,10 @@ export async function translateNodesTrilingualMode(
 
     // Request transcriptions asynchronously
     const transcriptions = await Promise.all(
-      textNodes.map(node => transcribeTextToPhoneticsAsync(node.textContent ?? "")),
+      textNodes.map(node => transcribeTextToPhoneticsAsync(
+        node.textContent ?? "",
+        config.translate.phonetic.pronunciationVariant,
+      )),
     )
 
     // Batch DOM mutations
@@ -568,9 +573,8 @@ export async function translateNodesTrilingualMode(
       })
     })
 
-    // Now populate the translatedWrapperNode with translation text
     const translationSpan = ownerDoc.createElement("span")
-    translationSpan.textContent = translatedText
+    translationSpan.innerHTML = translatedText
 
     await decorateTranslationNode(translationSpan, config.translate.translationNodeStyle)
 

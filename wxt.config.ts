@@ -36,7 +36,6 @@ export default defineConfig({
       "storage",
       "tabs",
       "alarms",
-      "cookies",
       "contextMenus",
       "identity",
       "scripting",

@@ -20,6 +20,11 @@ popup:
   targetLang: Hedef
   translate: Çevir
   showOriginal: Orijinali Göster
+  phoneticGuide: Phonetic Guide
+  hidePhonetics: Hide Phonetics
+  trilingualMode: Phonetic + Translation
+  hideTrilingualMode: Hide
+  trilingualModeDescription: Show IPA phonetics alongside translation.
   enabledFloatingButton: Yüzen butonu etkinleştir
   enabledSelectionToolbar: Seçim araç çubuğunu etkinleştir
   alwaysTranslate: Bu siteyi her zaman çevir
@@ -30,21 +35,10 @@ popup:
   translateParagraph: paragrafı çevirmek için
   hub:
     tooltip: Birden fazla çeviri modeliyle aynı anda metin çevirin
-  discord:
-    tooltip: Geliştiricilerle bağlantı kurmak ve yeni özelliklere erken erişim sağlamak için Discord'a katılın
   blog:
     notification: Read Frog'da yenilikler
   aiSmartContext: AI Akıllı Bağlam
   aiSmartContextDescription: Çeviri kalitesini artırmak için web sayfası bağlamını kullanır. LLM çeviri sağlayıcısı gerektirir.
-  more:
-    title: Daha Fazla
-    translationHub: Çeviri Merkezi
-    joinDiscord: Discord'a Katıl
-    joinWechat: WeChat Grubuna Katıl
-    starGithub: Github'da Yıldız Ver
-    rateUs: Bizi Değerlendirin
-    ebook: Üçüncü Taraf E-kitap Okuyucu
-    tutorial: Rehber
 errorRecovery:
   title: Bir sorun oluştu
   description: Kurtarma modu etkin. Geçerli ayarlarınızı yedek olarak dışa aktarabilir, ardından ayarları sıfırlayıp tekrar deneyebilirsiniz.
@@ -584,6 +578,14 @@ options:
       title: Üzerine Gelme veya Uzun Basma Çeviri Kısayolu
       description: Üzerine gelme için değiştirici tuşu özelleştirin veya paragrafları çevirmek için uzun basın
       enable: Etkinleştir
+    phoneticPronunciation:
+      title: Fonetik Telaffuz
+      description: Fonetik rehber modunda birden fazla telaffuzun nasıl gösterileceğini seçin
+      label: Telaffuz tercihi
+      variant:
+        spoken: Konuşma Pratiği
+        primary: Ana Telaffuz
+        all: Tümünü Göster
     llmProviderConfigured: $1 için LLM sağlayıcısı seçildi
     llmProviderNotConfigured: $1 için LLM sağlayıcısı seçilmedi
     autoTranslateLanguages:

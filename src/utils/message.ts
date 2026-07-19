@@ -13,7 +13,7 @@ import type {
   EdgeTTSSynthesizeWireResponse,
 } from "@/types/edge-tts"
 import type { ProxyRequest, ProxyResponse } from "@/types/proxy-fetch"
-import type { TranslationState } from "@/types/translation-state"
+import type { PageTranslationMode, TranslationState } from "@/types/translation-state"
 import type {
   TTSOffscreenStopRequest,
   TTSPlaybackStartRequest,
@@ -33,10 +33,10 @@ interface ProtocolMap {
   // translation state
   getEnablePageTranslationByTabId: (data: { tabId: number }) => TranslationState | null | undefined
   getEnablePageTranslationFromContentScript: () => Promise<TranslationState | null>
-  tryToSetEnablePageTranslationByTabId: (data: { tabId: number, enabled: boolean, mode?: "translation" | "phonetic", analyticsContext?: FeatureUsageContext }) => void
-  tryToSetEnablePageTranslationOnContentScript: (data: { enabled: boolean, mode?: "translation" | "phonetic", analyticsContext?: FeatureUsageContext }) => void
-  setAndNotifyPageTranslationStateChangedByManager: (data: { enabled: boolean, url?: string, mode?: "translation" | "phonetic" }) => void
-  notifyTranslationStateChanged: (data: { enabled: boolean, mode?: "translation" | "phonetic" }) => void
+  tryToSetEnablePageTranslationByTabId: (data: { tabId: number, enabled: boolean, mode?: PageTranslationMode, analyticsContext?: FeatureUsageContext }) => void
+  tryToSetEnablePageTranslationOnContentScript: (data: { enabled: boolean, mode?: PageTranslationMode, analyticsContext?: FeatureUsageContext }) => void
+  setAndNotifyPageTranslationStateChangedByManager: (data: { enabled: boolean, url?: string, mode?: PageTranslationMode }) => void
+  notifyTranslationStateChanged: (data: { enabled: boolean, mode?: PageTranslationMode }) => void
   ensureIframeHostContentInjected: (data: { tabId?: number }) => void
   injectCurrentIframesAfterTopFrameNodeTranslation: () => void
   reportDetectedPageLanguage: (data: { detectedCodeOrUnd: LangCodeISO6393 | "und", url: string }) => void
@@ -44,7 +44,7 @@ interface ProtocolMap {
   getDetectedCode: () => LangCodeISO6393
   detectedPageLanguageChanged: (data: { detectedCode: LangCodeISO6393 }) => void
   // ask host to start page translation
-  askManagerToTogglePageTranslation: (data: { enabled: boolean, mode?: "translation" | "phonetic", analyticsContext?: FeatureUsageContext }) => void
+  askManagerToTogglePageTranslation: (data: { enabled: boolean, mode?: PageTranslationMode, analyticsContext?: FeatureUsageContext }) => void
   openSelectionTranslationFromContextMenu: (data: { selectionText: string }) => void
   openSelectionCustomActionFromContextMenu: (data: { actionId: string, selectionText: string }) => void
   // analytics

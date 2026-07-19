@@ -19,7 +19,7 @@ import { renderPersistentReactRoot } from "@/utils/react-root"
 import { queryClient } from "@/utils/tanstack-query"
 import { getLocalThemeMode } from "@/utils/theme"
 import App from "./app"
-import { getIsInPatterns, isCurrentSiteInPatternsAtom, isPagePhoneticAtom, isPageTranslatedAtom } from "./atoms/auto-translate"
+import { getIsInPatterns, isCurrentSiteInPatternsAtom, isPagePhoneticAtom, isPageTranslatedAtom, isPageTrilingualAtom } from "./atoms/auto-translate"
 import { isIgnoreTabAtom, isIgnoreUrl } from "./atoms/ignore"
 import { isCurrentSiteInBlacklistAtom, isCurrentSiteInWhitelistAtom, isInSiteControlList } from "./atoms/site-control"
 import "@/assets/styles/text-small.css"
@@ -33,6 +33,7 @@ function HydrateAtoms({
     [typeof configAtom, Config],
     [typeof isPageTranslatedAtom, boolean],
     [typeof isPagePhoneticAtom, boolean],
+    [typeof isPageTrilingualAtom, boolean],
     [typeof isCurrentSiteInPatternsAtom, boolean],
     [typeof isIgnoreTabAtom, boolean],
     [typeof isCurrentSiteInWhitelistAtom, boolean],
@@ -63,6 +64,7 @@ async function initApp() {
 
   let isPageTranslated: boolean = false
   let isPagePhonetic: boolean = false
+  let isPageTrilingual: boolean = false
   if (tabId) {
     const state = await sendMessage("getEnablePageTranslationByTabId", {
       tabId,
@@ -70,6 +72,9 @@ async function initApp() {
     if (state?.enabled) {
       if (state.mode === "phonetic") {
         isPagePhonetic = true
+      }
+      else if (state.mode === "trilingual") {
+        isPageTrilingual = true
       }
       else {
         isPageTranslated = true
@@ -99,6 +104,7 @@ async function initApp() {
               [configAtom, config],
               [isPageTranslatedAtom, isPageTranslated],
               [isPagePhoneticAtom, isPagePhonetic],
+              [isPageTrilingualAtom, isPageTrilingual],
               [isCurrentSiteInPatternsAtom, isInPatterns],
               [isIgnoreTabAtom, isIgnoreTab],
               [isCurrentSiteInWhitelistAtom, isInWhitelist],

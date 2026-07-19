@@ -1,4 +1,5 @@
 import type { Config } from "@/types/config/config"
+import type { PageTranslationMode } from "@/types/translation-state"
 import {
   BLOCK_ATTRIBUTE,
   CONTENT_WRAPPER_CLASS,
@@ -13,7 +14,7 @@ export async function translateWalkedElement(
   walkId: string,
   config: Config,
   toggle: boolean = false,
-  mode?: "translation" | "phonetic",
+  mode?: PageTranslationMode,
 ): Promise<void> {
   if (!toggle && element.querySelector(`.${CONTENT_WRAPPER_CLASS}`))
     return

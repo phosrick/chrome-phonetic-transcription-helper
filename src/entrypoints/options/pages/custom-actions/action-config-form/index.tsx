@@ -20,6 +20,7 @@ import {
   getSelectionToolbarCustomActionTokenCellText,
   SELECTION_TOOLBAR_CUSTOM_ACTION_TOKENS,
 } from "@/utils/constants/custom-action"
+import { ENABLE_READFROG_CLOUD_FEATURES } from "@/utils/constants/feature-flags"
 import { sanitizeSelectionToolbarCustomAction } from "@/utils/notebase"
 import { cn } from "@/utils/styles/utils"
 import { selectedCustomActionIdAtom } from "../atoms"
@@ -135,7 +136,7 @@ function CustomActionConfigEditor({ selectedAction }: { selectedAction: Selectio
 
           <OutputSchemaField form={form} />
 
-          {betaExperienceConfig.enabled && <NotebaseConnectionField form={form} />}
+          {ENABLE_READFROG_CLOUD_FEATURES && betaExperienceConfig.enabled && <NotebaseConnectionField form={form} />}
         </div>
         <div className="flex justify-end mt-8">
           <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>

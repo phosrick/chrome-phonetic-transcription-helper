@@ -126,9 +126,8 @@
 }
 
 .rf-phonetic-annotated rt {
-  font-size: 0.65em;
-  color: var(--read-frog-muted-foreground);
-  user-select: none;
+  font-size: 0.72em;
+  color: var(--read-frog-phonetic, var(--read-frog-muted-foreground));
   font-family: "Lucida Sans Unicode", "Arial Unicode MS", "Segoe UI", sans-serif;
   padding-bottom: 0.1em;
 }

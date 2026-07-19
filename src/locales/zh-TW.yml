@@ -20,6 +20,11 @@ popup:
   targetLang: 目標語言
   translate: 翻譯
   showOriginal: 顯示原文
+  phoneticGuide: 音標對照
+  hidePhonetics: 隱藏音標
+  trilingualMode: 音標+翻譯
+  hideTrilingualMode: 關閉
+  trilingualModeDescription: 翻譯時同步顯示英文單字的 IPA 音標對照。
   enabledFloatingButton: 啟用懸浮按鈕
   enabledSelectionToolbar: 啟用選擇工具列
   alwaysTranslate: 總是翻譯這個網站
@@ -30,21 +35,10 @@ popup:
   translateParagraph: 翻譯段落
   hub:
     tooltip: 一次使用多個翻譯模型翻譯文字
-  discord:
-    tooltip: 加入 Discord 與開發者討論，搶先體驗新功能
   blog:
     notification: 陪讀蛙更新動態
   aiSmartContext: AI 智慧上下文
   aiSmartContextDescription: 結合網頁上下文提升翻譯效果。需要設定 LLM 翻譯服務提供者。
-  more:
-    title: 更多
-    translationHub: 翻譯中心
-    joinDiscord: 加入 Discord
-    joinWechat: 加入微信群
-    starGithub: 在 GitHub 加星
-    rateUs: 給予好評
-    ebook: 第三方電子書閱讀器
-    tutorial: 使用教學
 errorRecovery:
   title: 應用程式發生異常
   description: 已進入復原模式。你可以先匯出目前設定作為備份，再重設設定後重試。
@@ -584,6 +578,14 @@ options:
       title: 懸停或長按翻譯快速鍵
       description: 自訂懸停翻譯的修飾鍵，或使用滑鼠長按翻譯段落
       enable: 啟用
+    phoneticPronunciation:
+      title: 音標讀音偏好
+      description: 選擇音標對照中多讀音單字的顯示方式
+      label: 讀音偏好
+      variant:
+        spoken: 口語優先
+        primary: 主讀音
+        all: 顯示全部
     llmProviderConfigured: 已為$1選擇 LLM 提供者
     llmProviderNotConfigured: 沒有為$1選擇 LLM 提供者
     autoTranslateLanguages:

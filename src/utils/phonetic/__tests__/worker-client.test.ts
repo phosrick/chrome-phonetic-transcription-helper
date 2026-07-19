@@ -22,6 +22,12 @@ describe("transcribeTextToPhoneticsAsync", () => {
     expect(result).toBe(expected)
   })
 
+  it("passes pronunciation variant options through async transcription", async () => {
+    const result = await transcribeTextToPhoneticsAsync("and data", "all")
+
+    expect(result).toBe("<ruby>and<rt>/ənd, ˈænd/</rt></ruby> <ruby>data<rt>/ˈdeɪtə, ˈdætə/</rt></ruby>")
+  })
+
   it("falls back to inline transcription when worker construction fails", async () => {
     vi.stubGlobal("Worker", class {
       constructor() {

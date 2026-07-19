@@ -1,4 +1,5 @@
 import type { GeneratedI18nStructure } from "#i18n"
+import { ENABLE_READFROG_CLOUD_FEATURES } from "@/utils/constants/feature-flags"
 
 type I18nKey = keyof GeneratedI18nStructure
 
@@ -28,14 +29,18 @@ const TTS_SEARCH_ITEMS: SearchItemDefinition[] = !IS_FIREFOX
     }]
   : []
 
+const CLOUD_CONFIG_SEARCH_ITEMS: SearchItemDefinition[] = ENABLE_READFROG_CLOUD_FEATURES
+  ? [{
+      sectionId: "beta-experience",
+      route: "/config",
+      titleKey: "options.betaExperience.title",
+      descriptionKey: "options.betaExperience.description",
+      pageKey: "options.config.title",
+    }]
+  : []
+
 const CONFIG_SEARCH_ITEMS = [
-  {
-    sectionId: "beta-experience",
-    route: "/config",
-    titleKey: "options.betaExperience.title",
-    descriptionKey: "options.betaExperience.description",
-    pageKey: "options.config.title",
-  },
+  ...CLOUD_CONFIG_SEARCH_ITEMS,
   {
     sectionId: "google-drive-sync",
     route: "/config",

@@ -27,6 +27,25 @@ describe("transcribeTextToPhonetics", () => {
     expect(transcribeTextToPhonetics("learning")).toBe("<ruby>learning<rt>/ˈlɝːnɪŋ/</rt></ruby>")
   })
 
+  it("uses spoken-practice pronunciations by default for common function words", () => {
+    const input = "and of to the a"
+    const expected = "<ruby>and<rt>/ənd/</rt></ruby> <ruby>of<rt>/əv/</rt></ruby> <ruby>to<rt>/tə/</rt></ruby> <ruby>the<rt>/ðə/</rt></ruby> <ruby>a<rt>/ə/</rt></ruby>"
+
+    expect(transcribeTextToPhonetics(input)).toBe(expected)
+  })
+
+  it("uses the first dictionary pronunciation for primary mode", () => {
+    expect(transcribeTextToPhonetics("and data", "primary")).toBe("<ruby>and<rt>/ənd/</rt></ruby> <ruby>data<rt>/ˈdeɪtə/</rt></ruby>")
+  })
+
+  it("keeps all dictionary pronunciations in all mode", () => {
+    expect(transcribeTextToPhonetics("and data", "all")).toBe("<ruby>and<rt>/ənd, ˈænd/</rt></ruby> <ruby>data<rt>/ˈdeɪtə, ˈdætə/</rt></ruby>")
+  })
+
+  it("keeps homograph resolution ahead of dictionary pronunciation variants", () => {
+    expect(transcribeTextToPhonetics("read", "all")).toBe("<ruby>read<rt>/riːd/</rt></ruby>")
+  })
+
   it("leaves unknown words untranscribed", () => {
     const input = "unknownxyz word"
     const expected = "unknownxyz <ruby>word<rt>/ˈwɝːd/</rt></ruby>"

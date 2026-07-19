@@ -1,5 +1,6 @@
 import type { PageTranslationManager } from "../page-translation"
 import type { Config } from "@/types/config/config"
+import type { PageTranslationMode } from "@/types/translation-state"
 import { describe, expect, it, vi } from "vitest"
 import { handleTranslationModeChange } from "../handle-config-change"
 
@@ -14,7 +15,7 @@ function createMockConfig(mode: "bilingual" | "translationOnly", showAlongsideTr
   } as Config
 }
 
-function createMockManager(isActive: boolean, mode: "translation" | "phonetic" = "translation"): PageTranslationManager {
+function createMockManager(isActive: boolean, mode: PageTranslationMode = "translation"): PageTranslationManager {
   return {
     isActive,
     mode,
